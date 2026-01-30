@@ -18,10 +18,12 @@ DEBUG = os.getenv("DEBUG") == "True"
 ALLOWED_HOSTS = []
 
 
+IMAGEKIT_PRIVATE_KEY = os.getenv("IMAGEKIT_PRIVATE_KEY")
+IMAGEKIT_PUBLIC_KEY = os.getenv("IMAGEKIT_PUBLIC_KEY")
+IMAGEKIT_URL_ENDPOINT = os.getenv("IMAGEKIT_URL_ENDPOINT")
 
 INSTALLED_APPS = [
     "corsheaders",
-
     # Django
     "django.contrib.admin",
     "django.contrib.auth",
@@ -38,6 +40,8 @@ INSTALLED_APPS = [
 
     # Local
     "accounts",
+
+    'papers',
 ]
 
 

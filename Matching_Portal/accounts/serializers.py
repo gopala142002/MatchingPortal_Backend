@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from django.db import transaction
 from accounts.models import Researcher
+
 
 class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -10,20 +12,37 @@ class RegisterSerializer(serializers.Serializer):
     institution = serializers.CharField()
     department = serializers.CharField()
     academic_position = serializers.CharField()
-    research_interests = serializers.ListField(
-        child=serializers.CharField()
-    )
+    research_interests = serializers.JSONField()
 
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email already registered")
+        return value
+
+    def validate_research_interests(self, value):
+
+        if isinstance(value, str):
+            value = value.split(",")
+
+        cleaned = [
+            v.strip().lower()
+            for v in value
+            if v.strip()
+        ]
+
+        return list(set(cleaned))
+
+    @transaction.atomic
     def create(self, validated_data):
+
         email = validated_data["email"]
         password = validated_data["password"]
 
         user = User.objects.create_user(
-            username=email,      
+            username=email,
             email=email,
             password=password
         )
-
         Researcher.objects.create(
             user=user,
             name=validated_data["name"],
@@ -32,26 +51,21 @@ class RegisterSerializer(serializers.Serializer):
             academic_position=validated_data["academic_position"],
             research_interests=validated_data["research_interests"],
         )
-
         return user
+    
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-
     def validate(self, data):
         email = data["email"]
         password = data["password"]
-
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid credentials")
-
         user = authenticate(username=user.username, password=password)
-
         if not user:
             raise serializers.ValidationError("Invalid credentials")
-
         data["user"] = user
         return data
     
