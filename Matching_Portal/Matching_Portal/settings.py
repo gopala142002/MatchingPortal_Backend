@@ -1,49 +1,33 @@
-"""
-Django settings for Matching_Portal project.
-"""
-
 from pathlib import Path
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
-
-
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG") == "True"
-
 ALLOWED_HOSTS = []
-
-
 IMAGEKIT_PRIVATE_KEY = os.getenv("IMAGEKIT_PRIVATE_KEY")
 IMAGEKIT_PUBLIC_KEY = os.getenv("IMAGEKIT_PUBLIC_KEY")
 IMAGEKIT_URL_ENDPOINT = os.getenv("IMAGEKIT_URL_ENDPOINT")
-
 INSTALLED_APPS = [
     "corsheaders",
-    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    # DRF
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
-
-    # Local
     "accounts",
-
     'papers',
+    "reviewers",
+    "paperAssign",
+    "data"
 ]
-
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -127,7 +111,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=int(os.getenv("ACCESS_TOKEN_MINUTES", 15))
+        minutes=int(os.getenv("ACCESS_TOKEN_MINUTES",10))
     ),
 
     "REFRESH_TOKEN_LIFETIME": timedelta(

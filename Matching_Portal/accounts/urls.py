@@ -7,6 +7,6 @@ urlpatterns = [
     path("verify_token/", verify_token, name="verify_token"),
     path("login/", login_view, name="login"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("me/", profile, name="profile"),
+    path("me/", profile,name="profile"),
     path("logout/", logout_view, name="logout"),
 ]

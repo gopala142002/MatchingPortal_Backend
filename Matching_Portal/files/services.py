@@ -8,7 +8,7 @@ from django.conf import settings
 def generate_upload_auth():
 
     token = str(uuid.uuid4())
-    expire = int(time.time()) + 600   # 10 minutes
+    expire = int(time.time()) + 600  
 
     message = f"{token}{expire}".encode()
 
